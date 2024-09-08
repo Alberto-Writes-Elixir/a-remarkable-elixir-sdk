@@ -1,0 +1,59 @@
+name: A reMarkable Elixir SDK - CI
+
+on:
+  # Run CI on push and pull requests to main branch
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Test app
+    runs-on: ubuntu-latest
+    env:
+      MIX_ENV: test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Elixir runtime environment
+        uses: erlef/setup-beam@v1
+        id: beam
+        with:
+          version-file: .tool-versions
+          version-type: strict
+
+      - name: Restore cache if available. Uses
+        uses: actions/cache@v4
+        id: restore-cache
+        # The beam step outputs the OTP and Elixir versions, which can be accessed
+        # using ${{ steps.beam.outputs.otp-version }} and ${{ steps.beam.outputs.elixir-version }}
+        env:
+          OTP_VERSION: ${{ steps.beam.outputs.otp-version }}
+          ELIXIR_VERSION: ${{ steps.beam.outputs.elixir-version }}
+          MIX_LOCK_HASH: ${{ hashFiles('**/mix.lock') }}
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-${{ env.ELIXIR_VERSION }}-${{ env.OTP_VERSION }}-${{ env.MIX_ENV }}-mixlockhash-${{ env.MIX_LOCK_HASH }}
+
+      - name: Install mix dependencies
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        run: mix deps.get
+
+      - name: Compile dependencies
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        run: mix deps.compile
+
+      - name: Compile project
+        run: mix compile --warnings-as-errors --force
+
+      - name: Check all dependencies are being used in project
+        run: mix deps.unlock --check-unused
+
+      - name: Run Project Tests
+        run: mix test
