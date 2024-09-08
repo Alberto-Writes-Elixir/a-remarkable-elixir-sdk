@@ -12,7 +12,7 @@ create applications that can interact with the reMarkable Cloud.
 
 ### How to Contribute
 
-#### Installing Elixir & Setting Up Project
+#### Installing Elixir
 
 1. Install [asdf](https://asdf-vm.com/#/core-manage-asdf-vm).
 	 `asdf` is a version manager for Elixir and Erlang. Similar
@@ -52,3 +52,11 @@ create applications that can interact with the reMarkable Cloud.
 	```sh
    asdf install
 	```
+
+#### Setting Up Project
+
+1. To create a new project, run the following command:
+	```sh
+	mix new <project-name>
+	```
+
