@@ -1,6 +1,6 @@
-defmodule Aremarkableelixirsdk do
+defmodule ARemarkableElixirSdk do
   @moduledoc """
-  Documentation for `Aremarkableelixirsdk`.
+  Documentation for `ARemarkableElixirSdk`.
   """
 
   @doc """
@@ -8,7 +8,7 @@ defmodule Aremarkableelixirsdk do
 
   ## Examples
 
-      iex> Aremarkableelixirsdk.hello()
+      iex> ARemarkableElixirSdk.hello()
       :world
 
   """
